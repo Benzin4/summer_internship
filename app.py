@@ -225,12 +225,14 @@ def watch_profiles(profile_id):
     image_file = url_for('static', filename='profile_pics/' + user.image_file)
     return render_template('profile.html', image_file=image_file, user=user )
 
+
 @app.route('/teacher/checkedtask/<id>')
 @login_required
 def teacher_checked_task(id):
     user = Users.query.filter_by(id=id).first()
     task_all = Tasks.query.filter_by(touser=user.email)
     return render_template('teacher_checked_task.html', tasks=task_all, user=user, id=int(id))
+
 
 @app.route('/student', methods=['GET', 'POST'])
 @login_required
@@ -288,6 +290,16 @@ def upload_task():
                                                    fromuserid=current_user.id,
                                                    priority=priority)
                                             db.session.add(upload)
+                                            db.session.commit()
+                                            up_task = upload
+                                            priority_up = upload.priority
+                                            while priority_up != 0:
+                                                changetask = Tasks.query.filter_by(priority=priority_up).first()
+                                                if changetask:
+                                                    changetask.priority = priority_up + 1
+                                                    db.session.commit()
+                                                priority_up -= 1
+                                            up_task.priority = 1
                                             db.session.commit()
                                             flash(f'Добавлено', 'success')
                                     else:
