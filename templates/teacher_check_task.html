@@ -19,17 +19,15 @@
 
                 <div class="middle-teacher-list">
                     <h2>Со сроком</h2>
-                    {% for task in tasks %}
-                        {% if task.status == '2' %}
-                            <a href="/teacher/checktask/{{task.id}}"><h3>Задание: {{ task.header }} </h3></a>
-                            <a href="/account/{{task.fromuserid}}"><h4>от {{task.fromuser}}</h4></a>
-                        {%endif%}
+                    {% for task in tasks_date %}
+                        <a href="/teacher/checktask/{{task.id}}"><h3>Задание: {{ task.header }} </h3></a>
+                        <a href="/account/{{task.fromuserid}}"><h4>от {{task.fromuser}}</h4></a>
                     {%endfor%}
                 </div>
 
                 <div class="right-teacher-list">
                     <h2>Закрепленные</h2>
-                    {% for task in tasks %}
+                    {% for task in tasks_date2 %}
                         {% if task.status == '3' %}
                             <a href="/teacher/checktask/{{task.id}}"><h3>Задание: {{ task.header }} </h3></a>
                             <a href="/account/{{task.fromuserid}}"><h4>от {{task.fromuser}}</h4></a>

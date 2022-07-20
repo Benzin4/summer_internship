@@ -7,6 +7,8 @@ from werkzeug.security import check_password_hash, generate_password_hash
 from io import BytesIO
 from forms import LoginForm, AddTask, ChangePassword, Registration, UpdateAccountForm, RegisterPage, DashboardView, Users, AddStudentForm, DeleteStudentForm
 from models import Tasks, AddStudent
+from sqlalchemy import func
+
 from passwords import create_password
 from save_picture import save_picture
 from __init__ import db, app, manager
@@ -256,6 +258,20 @@ def upload_task():
         date = form.date_field.data
         touser = form.touser_field.data
         status = request.form.get('select')
+        if status == '2':
+            if date:
+                if len(date) != 10:
+                    temp = 0
+                else:
+                    temp = 0
+                    for i in range(len(date)):
+                        if date[i] != '-':
+                            temp += 1
+                        else:
+                            break
+        else:
+            date = '9999-12-28'
+            temp = 4
         task = db.session.query(Tasks).order_by(Tasks.priority.desc()).first()
         if task:
             priority = task.priority + 1
@@ -266,54 +282,57 @@ def upload_task():
         if status == '1':
             check = 1
         try:
-            user = Users.query.filter_by(email=touser).first()
-            if user:
-                if user.role == 'Преподаватель':
-                    if text and header and touser:
-                        if check == 1:
-                            currentemail = str(current_user.email)
-                            teacherid = str(user.id)
-                            check1 = AddStudent.query.filter_by(teacherid=teacherid).first()
-                            if check1:
-                                check2 = check1.query.filter_by(studentemail=currentemail).first()
-                                if check2:
-                                    if filetype in app.config['ALLOWED_EXTENSIONS']:
-                                        if current_user.name == '-' or current_user.surname == '-' or current_user.group == '-' or current_user.yearadmission == '-':
-                                            flash('Измените профиль, добавьте информацию о себе', 'danger')
+            if temp == 4:
+                user = Users.query.filter_by(email=touser).first()
+                if user:
+                    if user.role == 'Преподаватель':
+                        if text and header and touser:
+                            if check == 1:
+                                currentemail = str(current_user.email)
+                                teacherid = str(user.id)
+                                check1 = AddStudent.query.filter_by(teacherid=teacherid).first()
+                                if check1:
+                                    check2 = check1.query.filter_by(studentemail=currentemail).first()
+                                    if check2:
+                                        if filetype in app.config['ALLOWED_EXTENSIONS']:
+                                            if current_user.name == '-' or current_user.surname == '-' or current_user.group == '-' or current_user.yearadmission == '-':
+                                                flash('Измените профиль, добавьте информацию о себе', 'danger')
+                                            else:
+                                                upload = Tasks(filename=file.filename, data=file.read(), mark='-', status=status,
+                                                            date=date,
+                                                            text=text,
+                                                            answer='-', fromuser=current_user.name + ' ' + current_user.surname,
+                                                            touser=touser,
+                                                            header=header,
+                                                            fromuserid=current_user.id,
+                                                            priority=priority)
+                                                db.session.add(upload)
+                                                db.session.commit()
+                                                up_task = upload
+                                                priority_up = upload.priority
+                                                while priority_up != 0:
+                                                    changetask = Tasks.query.filter_by(priority=priority_up).first()
+                                                    if changetask:
+                                                        changetask.priority = priority_up + 1
+                                                        db.session.commit()
+                                                    priority_up -= 1
+                                                up_task.priority = 1
+                                                db.session.commit()
+                                                flash(f'Добавлено', 'success')
                                         else:
-                                            upload = Tasks(filename=file.filename, data=file.read(), mark='-', status=status,
-                                                   date=date,
-                                                   text=text,
-                                                   answer='-', fromuser=current_user.name + ' ' + current_user.surname,
-                                                   touser=touser,
-                                                   header=header,
-                                                   fromuserid=current_user.id,
-                                                   priority=priority)
-                                            db.session.add(upload)
-                                            db.session.commit()
-                                            up_task = upload
-                                            priority_up = upload.priority
-                                            while priority_up != 0:
-                                                changetask = Tasks.query.filter_by(priority=priority_up).first()
-                                                if changetask:
-                                                    changetask.priority = priority_up + 1
-                                                    db.session.commit()
-                                                priority_up -= 1
-                                            up_task.priority = 1
-                                            db.session.commit()
-                                            flash(f'Добавлено', 'success')
-                                    else:
-                                        flash('Неверный формат файла', 'danger')
+                                            flash('Неверный формат файла', 'danger')
+                                else:
+                                    flash('Данный преподаватель вас не добавил', 'danger')
                             else:
-                                flash('Данный преподаватель вас не добавил', 'danger')
+                                flash('Если задание со сроком, введите дату', 'danger')
                         else:
-                            flash('Если задание со сроком, введите дату', 'danger')
+                            flash('Заполните все поля', 'danger')
                     else:
-                        flash('Заполните все поля', 'danger')
+                        flash('Этот пользователь не преподаватель', 'danger')
                 else:
-                    flash('Этот пользователь не преподаватель', 'danger')
+                    flash('Такого пользователя не существует', 'danger')
             else:
-                flash('Такого пользователя не существует', 'danger')
+                flash('Неверный формат ввода даты, гггг-мм-дд', 'danger')
         except RequestEntityTooLarge:
             flash('Размер файла слишком большой', 'danger')
     return render_template('addtask.html', form=form,
@@ -338,7 +357,10 @@ def teacher():
 def teacher_check_task(id_teacher):
     user = Users.query.filter_by(id=id_teacher).first()
     task_all = Tasks.query.filter_by(touser=user.email).order_by(Tasks.priority).all()
-    return render_template('teacher_check_task.html', tasks=task_all, user=user, id=int(id_teacher))
+    task_all2 = Tasks.query.filter_by(touser=user.email).first()
+    task_date = task_all2.query.filter_by(status=2).order_by(func.date(Tasks.date)).all()
+    task_date2 = task_all2.query.filter_by(status=3).order_by(func.date(Tasks.date)).all()
+    return render_template('teacher_check_task.html', tasks=task_all, user=user, id=int(id_teacher), tasks_date=task_date, tasks_date2=task_date2)
 
 
 @app.route('/logout', methods=['GET', 'POST'])

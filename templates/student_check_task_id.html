@@ -12,7 +12,7 @@
             </div>
 
             <div class="left-bar-task">
-                {% if task.status == "1" or task.status == "2" or task.status == "3" %}
+                {% if task.status == "1" %}
                     <a href="/student/uptask/{{task.id}}"><input type="button" value="Поднять вверх"></a>
                 {% endif %}
 
@@ -27,7 +27,9 @@
                 {% elif task.status == "4" %}
                     <h5>Оценено</h5>
                 {% endif %}
-
+                {%if task.status == '2' %}
+                    <h5>Дедлайн: {{task.date}}</h5>
+                {%endif%}
                 <h5>Отправлено {{task.touser}}</h5>
             </div>
 

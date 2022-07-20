@@ -23,7 +23,7 @@
             <h5>Статус: оценено</h5>
         {% endif %}
 
-        {% if task.status != "4" %} 
+        {% if task.status != "4" %}
             <select name="selectmark">
                 <option value="2">2</option>
                 <option value="3">3</option>
@@ -33,7 +33,11 @@
         {% else %}
             <h5>Оценка: {{task.mark}}</h5>
         {%endif%}
-
+        {%if task.status == '2' or task.status == '3'%}
+            {% if task.date != '9999-12-28' %}
+                <h5>Дедлайн: {{task.date}}</h5>
+            {%endif%}
+        {%endif%}
         <h5>Отправлено {{task.fromuser}}</h5>
 
     </div>
@@ -44,7 +48,7 @@
             <textarea cols="65" rows="10" name="answer" placeholder="Введите сообщение"></textarea>
             <a href="/123"><input type="submit" value="Отправить"></a>
         {% endif %}
-            
+
     </div>
     {%else%}
     <meta http-equiv="refresh" content="0;URL=/" />
