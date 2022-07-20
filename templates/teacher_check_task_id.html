@@ -16,15 +16,16 @@
 
         {% if task.status != "4" %}
             <select name="selectstatus">
-                <option value="4">Оценено</option>
+                <option value="4">Выполнено</option>
                 <option value="3">Закрепленно</option>
             </select>
         {% else %}
-            <h5>Статус: оценено</h5>
+            <h5>Статус: Выполненно</h5>
         {% endif %}
 
         {% if task.status != "4" %}
             <select name="selectmark">
+                <option value="Без оценки">Без оценки</option>
                 <option value="2">2</option>
                 <option value="3">3</option>
                 <option value="4">4</option>
