@@ -2,7 +2,6 @@ from __init__ import db
 from flask_login import UserMixin
 
 
-
 class Users(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(50), nullable=False, unique=True)
@@ -32,7 +31,7 @@ class Tasks(db.Model):
 
 
 class AddStudent(db.Model):
-    id=db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True)
     teacherid = db.Column(db.String(100), nullable=False)
     studentemail = db.Column(db.String(100), nullable=False)
     studentid = db.Column(db.String(100), nullable=False)

@@ -6,8 +6,8 @@
         <meta http-equiv="refresh" content="0;URL=/teacher" />
     {% elif current_user.role == 'Админ' %}
         <div class="student-buttons">
-            <a href="/student"><input type="submit" value="К студенту"></a>
-            <a href="/teacher"><input type="submit" value="К преподавателю"></a>
+            <a href="/admin/users"><input type="submit" value="Пользователи"></a>
+            <a href="/admin/tasks"><input type="submit" value="Задания"></a>
         </div>
     {% endif %}
 {% endblock content %}

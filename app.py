@@ -5,14 +5,14 @@ from flask_login import login_user, login_required, logout_user, current_user
 from werkzeug.exceptions import RequestEntityTooLarge
 from werkzeug.security import check_password_hash, generate_password_hash
 from io import BytesIO
-from forms import LoginForm, AddTask, ChangePassword, Registration, UpdateAccountForm, RegisterPage, DashboardView, Users, AddStudentForm, DeleteStudentForm
+from forms import LoginForm, AddTask, ChangePassword, Registration, UpdateAccountForm, RegisterPage, DashboardView, \
+    Users, AddStudentForm, UsersView, TasksView
 from models import Tasks, AddStudent
 from sqlalchemy import func
 
 from passwords import create_password
 from save_picture import save_picture
 from __init__ import db, app, manager
-
 
 
 @app.route('/')
@@ -60,12 +60,14 @@ def teacher_check_task_id(task_id):
         return redirect('/teacher')
     return render_template('teacher_check_task_id.html', task=checked_task)
 
+
 @app.route("/student/checktask/<task_id>")
 @login_required
 def student_check_task_id(task_id):
     check_my_id = current_user.id
     checked_task = Tasks.query.filter_by(id=task_id).first()
     return render_template('student_check_task_id.html', task=checked_task, id=str(check_my_id))
+
 
 @app.route("/student/deletetask/<task_id>")
 @login_required
@@ -93,7 +95,7 @@ def up_task(task_id):
         while priority_up != 0:
             changetask = Tasks.query.filter_by(priority=priority_up).first()
             if changetask:
-                changetask.priority = priority_up+1
+                changetask.priority = priority_up + 1
                 db.session.commit()
             priority_up -= 1
         up_task.priority = 1
@@ -119,8 +121,6 @@ def download(task_id):
         return 'Такого файла не существует'
     except AttributeError:
         return 'Такого задания не существует'
-
-
 
 
 @app.route("/account", methods=['GET', 'POST'])
@@ -186,7 +186,7 @@ def add_student():
             db.session.commit()
             flash(f'Вы успешно добавили студента {user.name} {user.surname}', 'success')
         else:
-            flash('Такого студента не существует','danger')
+            flash('Такого студента не существует', 'danger')
     return render_template('addstudent.html', form=form)
 
 
@@ -206,9 +206,9 @@ def delete_student(studentid):
             else:
                 flash('Такой студент у вас не добавлен', 'danger')
         else:
-            flash('Вы еще не добавляли студентов','danger')
+            flash('Вы еще не добавляли студентов', 'danger')
     else:
-        flash('Такого студента не существует','danger')
+        flash('Такого студента не существует', 'danger')
     return render_template('deletestudent.html', )
 
 
@@ -225,7 +225,7 @@ def mystudents():
 def watch_profiles(profile_id):
     user = Users.query.filter_by(id=profile_id).first()
     image_file = url_for('static', filename='profile_pics/' + user.image_file)
-    return render_template('profile.html', image_file=image_file, user=user )
+    return render_template('profile.html', image_file=image_file, user=user)
 
 
 @app.route('/teacher/checkedtask/<id>')
@@ -298,14 +298,16 @@ def upload_task():
                                             if current_user.name == '-' or current_user.surname == '-' or current_user.group == '-' or current_user.yearadmission == '-':
                                                 flash('Измените профиль, добавьте информацию о себе', 'danger')
                                             else:
-                                                upload = Tasks(filename=file.filename, data=file.read(), mark='-', status=status,
-                                                            date=date,
-                                                            text=text,
-                                                            answer='-', fromuser=current_user.name + ' ' + current_user.surname,
-                                                            touser=touser,
-                                                            header=header,
-                                                            fromuserid=current_user.id,
-                                                            priority=priority)
+                                                upload = Tasks(filename=file.filename, data=file.read(), mark='-',
+                                                               status=status,
+                                                               date=date,
+                                                               text=text,
+                                                               answer='-',
+                                                               fromuser=current_user.name + ' ' + current_user.surname,
+                                                               touser=touser,
+                                                               header=header,
+                                                               fromuserid=current_user.id,
+                                                               priority=priority)
                                                 db.session.add(upload)
                                                 db.session.commit()
                                                 up_task = upload
@@ -360,7 +362,8 @@ def teacher_check_task(id_teacher):
     task_all2 = Tasks.query.filter_by(touser=user.email).first()
     task_date = task_all2.query.filter_by(status=2).order_by(func.date(Tasks.date)).all()
     task_date2 = task_all2.query.filter_by(status=3).order_by(func.date(Tasks.date)).all()
-    return render_template('teacher_check_task.html', tasks=task_all, user=user, id=int(id_teacher), tasks_date=task_date, tasks_date2=task_date2)
+    return render_template('teacher_check_task.html', tasks=task_all, user=user, id=int(id_teacher),
+                           tasks_date=task_date, tasks_date2=task_date2)
 
 
 @app.route('/logout', methods=['GET', 'POST'])
@@ -405,9 +408,9 @@ def load_user(user_id):
 
 
 admin = Admin(app, 'Админ панель', template_mode='bootstrap3', index_view=DashboardView(), endpoint='admin')
-admin.add_view(ModelView(Users, db.session, name='Пользователи'))
-admin.add_view(ModelView(Tasks, db.session, name='Задания'))
-admin.add_view(ModelView(AddStudent, db.session, name='Студенты-преподы'))
+admin.add_view(UsersView(Users, db.session, name='Пользователи'))
+admin.add_view(TasksView(Tasks, db.session, name='Задания'))
+admin.add_view(ModelView(AddStudent, db.session, name='Преподаватели-студенты'))
 admin.add_view(RegisterPage(name='Регистрация пользователей'))
 
 if __name__ == '__main__':

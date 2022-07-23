@@ -6,10 +6,8 @@ from flask_wtf.file import FileField
 from wtforms import PasswordField, StringField, BooleanField, SubmitField
 from wtforms.validators import ValidationError
 from models import Users
+from flask_admin.contrib.sqla import ModelView
 
-
-class UploadSomething(FlaskForm):
-    submit = SubmitField('Сохранить')
 
 class LoginForm(FlaskForm):
     email = StringField('Электронная почта')
@@ -36,11 +34,6 @@ class AddStudentForm(FlaskForm):
     submit = SubmitField('Добавить студента')
 
 
-class DeleteStudentForm(FlaskForm):
-    studentemail = StringField('Введите почту студента')
-    submit = SubmitField('Удалить студента')
-
-
 class Registration(FlaskForm):
     email = StringField('Введите почту')
     submit = SubmitField('Регистрация')
@@ -49,6 +42,7 @@ class Registration(FlaskForm):
         user = Users.query.filter_by(email=email.data).first()
         if user:
             raise ValidationError('Эта почта занята')
+
 
 class UpdateAccountForm(FlaskForm):
     name = StringField('Имя')
@@ -76,3 +70,11 @@ class DashboardView(AdminIndexView):
     @expose('/')
     def index(self):
         return self.render('admin/dashboard_index.html')
+
+
+class UsersView(ModelView):
+    column_exclude_list = ('password', 'image_file')
+
+
+class TasksView(ModelView):
+    column_exclude_list = ('filename', 'data')
