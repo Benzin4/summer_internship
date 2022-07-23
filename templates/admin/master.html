@@ -1,0 +1,9 @@
+{% extends 'admin/base.html' %}
+
+{% block access_control %}
+{% if current_user.is_authenticated %}
+    {%if current_user.role != 'Админ' %}
+        <meta http-equiv="refresh" content="0;URL=/" />
+    {% endif %}
+{% endif %}
+{% endblock %}

@@ -407,7 +407,7 @@ def load_user(user_id):
     return Users.query.get(user_id)
 
 
-admin = Admin(app, 'Админ панель', template_mode='bootstrap3', index_view=DashboardView(), endpoint='admin')
+admin = Admin(app, 'Админ панель', template_mode='bootstrap3',base_template='admin/master.html', index_view=DashboardView())
 admin.add_view(UsersView(Users, db.session, name='Пользователи'))
 admin.add_view(TasksView(Tasks, db.session, name='Задания'))
 admin.add_view(ModelView(AddStudent, db.session, name='Преподаватели-студенты'))
