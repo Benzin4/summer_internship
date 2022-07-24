@@ -8,7 +8,10 @@
         <div class="student-task-list">
             {% for student in students %}
                 <div class="task-ticket">
+<<<<<<< HEAD
                     <h2>{{student.studentname}} {{student.studentsurname}}</h2>
+=======
+>>>>>>> c924478b68abb7ebb0c3bd6734f3b7a1fb498aa7
                     <a href="/account/{{student.studentid}}"><h4>{{student.studentemail}}</h4></a>
                     <a href="/teacher/deletestudent/{{student.studentid}}"><input type="button" value="Удалить"</a>
                 </div>
