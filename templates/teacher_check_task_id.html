@@ -6,7 +6,7 @@
     {% if current_user.email == task.touser %}
     <div class="task-student-list">
         <h2>{{task.header}}</h2>
-        <textarea readonly rows="20" cols="100">{{ task.text }}</textarea>
+        <textarea readonly rows="25" cols="100">{{ task.text }}</textarea>
         {% if task.filename != '' %}
         <a href="/download/{{task.id}}"><input type="button" value="Скачать файл"></a>
         {%endif%}

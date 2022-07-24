@@ -5,16 +5,16 @@
         {% if current_user.id != id %}
             <meta http-equiv="refresh" content="0;URL=/"/>
         {% else %}
-        <div class="task-student-list">
+        <div class="student-task-list">
             {% for task in uploaded %}
-                    <div >
-                        <a href="/student/checktask/{{task.id}}"><h3 name="header">{{ task.header }}</h3></a>
+                    <div class="task-ticket">
+                        <a href="/student/checktask/{{task.id}}"><h4 name="header">{{ task.header }}</h3></a>
                         {% if task.status == "1" or task.status == "2" %}
-                            <h5>Не просмотрено</h4>
+                            <h5 style="background-color: rgb(255, 128, 128);">Не просмотрено</h4>
                         {% elif task.status == "3" %}
-                            <h5>Просмотрено</h5>
+                            <h5 style="background-color: rgb(255, 236, 128);">Просмотрено</h5>
                         {% elif task.status == "4" %}
-                            <h5>Выполнено</h5>
+                            <h5 style="background-color: rgb(164, 255, 128);">Выполнено</h5>
                         {% endif %}
 
                         {% if task.status == "1" or task.status == "2" %}
