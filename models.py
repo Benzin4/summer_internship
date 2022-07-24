@@ -35,3 +35,5 @@ class AddStudent(db.Model):
     teacherid = db.Column(db.String(100), nullable=False)
     studentemail = db.Column(db.String(100), nullable=False)
     studentid = db.Column(db.String(100), nullable=False)
+    studentname = db.Column(db.String(30), nullable=False)
+    studentsurname = db.Column(db.String(30), nullable=False)

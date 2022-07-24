@@ -181,7 +181,8 @@ def add_student():
         student = form.studentemail.data
         user = Users.query.filter_by(email=student).first()
         if user:
-            info = AddStudent(studentemail=student, teacherid=teacherid, studentid=str(user.id))
+            info = AddStudent(studentemail=student, teacherid=teacherid, studentid=str(user.id), studentname=user.name,
+                              studentsurname=user.surname)
             db.session.add(info)
             db.session.commit()
             flash(f'Вы успешно добавили студента {user.name} {user.surname}', 'success')
