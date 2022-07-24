@@ -314,3 +314,32 @@ input[type="button"]:hover{
 .student-buttons input[name="teacher-button"] {
   height: 50%;
 }
+
+.student-task-list{
+  margin: 20px -180px;
+  position: absolute;
+  width: 220%;
+  display: flex;
+  flex-wrap: wrap;
+  align-content: flex-start;
+}
+
+.task-ticket{
+  border: 1px solid black;
+  border-radius: 5px;
+  margin: 30px;
+  text-align: center;
+  width: 300px;
+  padding: 20px;
+}
+
+.task-ticket h4 {
+  padding: 15px 0px;
+}
+
+.task-ticket h5 {
+  margin-bottom: 10px;
+  padding-bottom: 5px;
+  border: 2px solid white;
+  border-radius: 10px;
+}
