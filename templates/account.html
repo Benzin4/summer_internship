@@ -89,6 +89,7 @@
                     {% else %}
                         {{ form.yearadmission(class="form-control form-control-lg") }}
                     {% endif %}
+                    {%endif%}
                 </div>
                 <div class="form-group">
                     {{ form.picture.label() }}
@@ -99,7 +100,6 @@
                         {% endfor %}
                     {% endif %}
                 </div>
-                {%endif%}
             </fieldset>
             <div class="form-group">
                 {{ form.submit(class="btn btn-outline-info") }}
