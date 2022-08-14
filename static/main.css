@@ -343,3 +343,7 @@ input[type="button"]:hover{
   border: 2px solid white;
   border-radius: 10px;
 }
+.task-ticket input[value="Удалить"] {
+  border: 1px solid #752020;
+  background: #fd8c7b;
+}
