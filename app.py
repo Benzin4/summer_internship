@@ -138,6 +138,9 @@ def account():
         if current_user.role == 'Преподаватель':
             current_user.group = '-'
             current_user.yearadmission = '-'
+        elif current_user.role == 'Админ':
+            current_user.group = '-'
+            current_user.yearadmission = '-'
         else:
             current_user.group = form.group.data
             current_user.yearadmission = form.yearadmission.data
